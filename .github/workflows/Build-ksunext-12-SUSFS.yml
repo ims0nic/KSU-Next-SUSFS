@@ -88,8 +88,8 @@ jobs:
           ###### rm -rf kernel_platform/common
           ###### git clone --depth=1 https://github.com/RealJohnGalt/kernel_common_oneplus_sm8650.git -b kplatform-staging kernel_platform/common
           
-          rm kernel_platform/common/android/abi_gki_protected_exports_* || echo "No protected exports!"
-          rm kernel_platform/msm-kernel/android/abi_gki_protected_exports_* || echo "No protected exports!"
+          rm -rf kernel_platform/common/android/abi_gki_protected_exports_* || echo "No protected exports!"
+          rm -rf kernel_platform/msm-kernel/android/abi_gki_protected_exports_* || echo "No protected exports!"
 
       - name: Force remove -dirty suffix
         run: |

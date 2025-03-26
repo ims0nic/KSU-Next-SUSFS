@@ -181,7 +181,7 @@ jobs:
           echo "CONFIG_IP6_NF_MATCH_HL=y" >> ./common/arch/arm64/configs/gki_defconfig
 
           ###### Add bbrv3 config setting - TEST!
-          cp ../kernel_patches/bbr/tcp_bbr.c ./net/ipv4/
+          cp ../kernel_patches/bbr/tcp_bbr.c ./common/net/ipv4/
           ######
 
           # Config BBR

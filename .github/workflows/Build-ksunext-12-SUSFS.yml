@@ -92,12 +92,12 @@ jobs:
       - name: Initialize repo and sync
         run: |
           mkdir kernel_workspace && cd kernel_workspace
-          #### repo init -u https://github.com/OnePlusOSS/kernel_manifest.git -b refs/heads/oneplus/${{ github.event.inputs.CPU }} -m ${{ github.event.inputs.FEIL }}.xml --depth=1
+          repo init -u https://github.com/OnePlusOSS/kernel_manifest.git -b refs/heads/oneplus/${{ github.event.inputs.CPU }} -m ${{ github.event.inputs.FEIL }}.xml --depth=1
 
-          repo init -u https://github.com/RealJohnGalt/opsm8650_kernel_manifest.git -b kplatform-staging -m default.xml
+          #### repo init -u https://github.com/RealJohnGalt/opsm8650_kernel_manifest.git -b kplatform-staging -m default.xml
           repo sync
-          rm -rf kernel_platform/common
-          git clone --depth=1 https://github.com/RealJohnGalt/kernel_common_oneplus_sm8650.git -b kplatform-staging kernel_platform/common
+          #### rm -rf kernel_platform/common
+          #### git clone --depth=1 https://github.com/RealJohnGalt/kernel_common_oneplus_sm8650.git -b kplatform-staging kernel_platform/common
           
           rm -rf kernel_platform/common/android/abi_gki_protected_exports_* || echo "No protected exports!"
           rm -rf kernel_platform/msm-kernel/android/abi_gki_protected_exports_* || echo "No protected exports!"
@@ -109,8 +109,8 @@ jobs:
           sed -i 's/ -dirty//g' msm-kernel/scripts/setlocalversion
           sed -i 's/ -dirty//g' external/dtc/scripts/setlocalversion
           sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' common/scripts/setlocalversion
-          git add -A
-          git commit -m "Force remove -dirty suffix from kernel version"
+          # git add -A
+          # git commit -m "Force remove -dirty suffix from kernel version"
 
       - name: Set up KernelSU Next
         if: github.event.inputs.KSUNEXT_ENABLED == 'true'
@@ -245,5 +245,5 @@ jobs:
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v4
         with:
-          name: ak3_${{ env.KSUVER }}_RJG_ci_bbr_thin_${{ github.event.inputs.FEIL }}
+          name: ak3_26mar_${{ env.KSUVER }}_ci_bbr_thin_${{ github.event.inputs.FEIL }}
           path: ./AnyKernel3/*

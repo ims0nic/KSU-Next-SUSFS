@@ -181,7 +181,7 @@ jobs:
           echo "CONFIG_IP6_NF_MATCH_HL=y" >> ./common/arch/arm64/configs/gki_defconfig
 
           ###### Add bbrv3 config setting - TEST!
-          # cp ../kernel_patches/bbr/tcp_bbr.c ./common/net/ipv4/
+          cp ../kernel_patches/bbr/tcp_bbr.c ./common/net/ipv4/
           ######
 
           # Config BBR
@@ -211,8 +211,8 @@ jobs:
         run: |
          cd kernel_workspace
          export LTO=thin
-         #./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }}
-         ./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }}
+         ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }}
+         ### ./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }}
          ### ./kernel_platform/build_with_bazel.py --lto=full -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }}
          
          ### ./kernel_platform/build_with_bazel.py --lto=thin -t pineapple gki --jobs=$(nproc --all) --verbose_failures --config=stamp --user_kmi_symbol_lists=//msm-kernel:android/abi_gki_aarch64_qcom --ignore_missing_projects || { echo "Bazel build failed"; exit 1; }

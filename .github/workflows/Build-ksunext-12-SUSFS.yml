@@ -52,10 +52,10 @@ jobs:
           sudo apt-get install -qq curl
           curl -fsSL https://raw.githubusercontent.com/kou/arrow/e49d8ae15583ceff03237571569099a6ad62be32/ci/scripts/util_free_space.sh | bash
           
-      #- name: Setup ccache
-      #  uses: hendrikmuhs/ccache-action@v1.2
-      #  with:
-      #    max-size: 2G
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: 2G
 
       - name: Maximize build space
         uses: easimon/maximize-build-space@master

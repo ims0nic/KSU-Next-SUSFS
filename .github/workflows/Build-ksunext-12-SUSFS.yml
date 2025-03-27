@@ -94,10 +94,10 @@ jobs:
           mkdir kernel_workspace && cd kernel_workspace
           repo init -u https://github.com/OnePlusOSS/kernel_manifest.git -b refs/heads/oneplus/${{ github.event.inputs.CPU }} -m ${{ github.event.inputs.FEIL }}.xml --depth=1
 
-          #### repo init -u https://github.com/RealJohnGalt/opsm8650_kernel_manifest.git -b kplatform-staging -m default.xml
+          #repo init -u https://github.com/RealJohnGalt/opsm8650_kernel_manifest.git -b kplatform-staging -m default.xml
           repo sync
-          #### rm -rf kernel_platform/common
-          #### git clone --depth=1 https://github.com/RealJohnGalt/kernel_common_oneplus_sm8650.git -b kplatform-staging kernel_platform/common
+          #rm -rf kernel_platform/common
+          #git clone --depth=1 https://github.com/RealJohnGalt/kernel_common_oneplus_sm8650.git -b kplatform-staging kernel_platform/common
           
           rm -rf kernel_platform/common/android/abi_gki_protected_exports_* || echo "No protected exports!"
           rm -rf kernel_platform/msm-kernel/android/abi_gki_protected_exports_* || echo "No protected exports!"
@@ -109,8 +109,9 @@ jobs:
           sed -i 's/ -dirty//g' msm-kernel/scripts/setlocalversion
           sed -i 's/ -dirty//g' external/dtc/scripts/setlocalversion
           sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' common/scripts/setlocalversion
-          # git add -A
-          # git commit -m "Force remove -dirty suffix from kernel version"
+          
+          #git add -A
+          #git commit -m "Force remove -dirty suffix from kernel version"
 
       - name: Set up KernelSU Next
         if: github.event.inputs.KSUNEXT_ENABLED == 'true'
@@ -140,10 +141,11 @@ jobs:
           patch -p1 < 0001-kernel-patch-susfs-v1.5.5-to-KernelSU-Next-v1.0.5.patch || true
           cd ../common
           patch -p1 < 50_add_susfs_in_gki-${{ github.event.inputs.ANDROID_VERSION }}-${{ github.event.inputs.KERNEL_VERSION }}.patch || true
-
-          # Replace next_hooks.patch with syscall_hooks.patch
-          cp ../../kernel_patches/69_hide_stuff.patch ./
+          
+          cp ../../kernel_patches/69_hide_stuff.patch ./          
           patch -p1 -F 3 < 69_hide_stuff.patch
+          
+          # Replace next_hooks.patch with syscall_hooks.patch
           patch -p1 -F 3 < syscall_hooks.patch
 
       - name: Apply new hook and add configuration
@@ -180,16 +182,14 @@ jobs:
           echo "CONFIG_IP6_NF_TARGET_HL=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_IP6_NF_MATCH_HL=y" >> ./common/arch/arm64/configs/gki_defconfig
 
-          ###### Add bbrv3 config setting - TEST!
+          # Add bbrv3 config setting - replaced bbr file caused susfs compile error
           #cp ../kernel_patches/bbr/tcp_bbr.c ./common/net/ipv4/
-          ######
 
           # Config BBR
           echo "CONFIG_TCP_CONG_BIC=n" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_TCP_CONG_WESTWOOD=n" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_TCP_CONG_HTCP=n" >> ./common/arch/arm64/configs/gki_defconfig
-
-          # Add additional tcp_bbr config setting 
+          
           # Enable BBR 
           echo "CONFIG_TCP_CONG_ADVANCED=y" >> ./common/arch/arm64/configs/gki_defconfig 
           echo "CONFIG_TCP_CONG_BBR=y" >> ./common/arch/arm64/configs/gki_defconfig 
@@ -212,11 +212,12 @@ jobs:
          cd kernel_workspace
          export LTO=thin
          ### ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }}
-         ./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }}
-         ### ./kernel_platform/build_with_bazel.py --lto=full -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }}
          
-         ### ./kernel_platform/build_with_bazel.py --lto=thin -t pineapple gki --jobs=$(nproc --all) --verbose_failures --config=stamp --user_kmi_symbol_lists=//msm-kernel:android/abi_gki_aarch64_qcom --ignore_missing_projects || { echo "Bazel build failed"; exit 1; }
-         ### ./kernel_platform/build_with_bazel.py --lto=full -t pineapple gki --jobs=$(nproc --all) --verbose_failures --config=stamp --user_kmi_symbol_lists=//msm-kernel:android/abi_gki_aarch64_qcom --ignore_missing_projects || { echo "Bazel build failed"; exit 1; }
+         ./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }} --verbose_failures --jobs=$(nproc --all) --ignore_missing_projects
+         ### ./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }} --lto=full --verbose_failures --jobs=$(nproc --all) --ignore_missing_projects
+         
+         #./kernel_platform/build_with_bazel.py --lto=thin -t pineapple gki --jobs=$(nproc --all) --verbose_failures --config=stamp --user_kmi_symbol_lists=//msm-kernel:android/abi_gki_aarch64_qcom --ignore_missing_projects || { echo "Bazel build failed"; exit 1; }
+         #./kernel_platform/build_with_bazel.py --lto=full -t pineapple gki --jobs=$(nproc --all) --verbose_failures --config=stamp --user_kmi_symbol_lists=//msm-kernel:android/abi_gki_aarch64_qcom --ignore_missing_projects || { echo "Bazel build failed"; exit 1; }
       
       - name: Make AnyKernel3
         run: |
@@ -245,5 +246,5 @@ jobs:
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v4
         with:
-          name: ak3_26mar_${{ env.KSUVER }}_ci_bbr_thin_${{ github.event.inputs.FEIL }}
+          name: ak3_27mar_${{ env.KSUVER }}_ci_bbr_thin_${{ github.event.inputs.FEIL }}
           path: ./AnyKernel3/*

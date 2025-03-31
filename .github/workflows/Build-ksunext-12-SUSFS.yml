@@ -64,8 +64,8 @@ jobs:
           # temp-reserve-mb: 8192
           # swap-size-mb: 16384
 
-          root-reserve-mb: 8192
-          temp-reserve-mb: 2048
+          root-reserve-mb: 4096
+          temp-reserve-mb: 1024
           
           remove-dotnet: 'true'
           remove-android: 'true'
@@ -120,8 +120,8 @@ jobs:
           curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next/kernel/setup.sh" | bash -s next
           cd KernelSU-Next
           KSU_VERSION=$(expr $(/usr/bin/git rev-list --count HEAD) "+" 10200)
-          echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
           sed -i "s/DKSU_VERSION=11998/DKSU_VERSION=${KSU_VERSION}/" kernel/Makefile
+          echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
 
       - name: Set up susfs
         if: github.event.inputs.SUSFS_ENABLED == 'true'
@@ -213,8 +213,7 @@ jobs:
          export LTO=thin
          ### ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }}
 
-         ./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }} --lto=full --verbose_failures --jobs=$(nproc --all) --ignore_missing_projects
-         #./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }} --lto=thin --verbose_failures --jobs=$(nproc --all) --ignore_missing_projects --user_kmi_symbol_lists=//msm-kernel:android/abi_gki_aarch64_qcom 
+         ./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }} --lto=thin --verbose_failures --jobs=$(nproc --all) --ignore_missing_projects --user_kmi_symbol_lists=//msm-kernel:android/abi_gki_aarch64_qcom 
          ### ./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }} --lto=full --verbose_failures --jobs=$(nproc --all) --ignore_missing_projects
          
          #./kernel_platform/build_with_bazel.py --lto=thin -t pineapple gki --jobs=$(nproc --all) --verbose_failures --config=stamp --user_kmi_symbol_lists=//msm-kernel:android/abi_gki_aarch64_qcom --ignore_missing_projects || { echo "Bazel build failed"; exit 1; }
@@ -247,5 +246,5 @@ jobs:
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v4
         with:
-          name: ak3_30mar_${{ env.KSUVER }}_ci_bbr_full_${{ github.event.inputs.FEIL }}
+          name: ak3_31mar_${{ env.KSUVER }}_ci_bbr_thin_${{ github.event.inputs.FEIL }}
           path: ./AnyKernel3/*

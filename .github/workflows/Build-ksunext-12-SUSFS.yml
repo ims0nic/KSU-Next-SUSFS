@@ -64,8 +64,9 @@ jobs:
           # temp-reserve-mb: 8192
           # swap-size-mb: 16384
 
-          root-reserve-mb: 8192
-          temp-reserve-mb: 2048
+          root-reserve-mb: 2048
+          temp-reserve-mb: 1024
+          swap-size-mb:  1024
           
           remove-dotnet: 'true'
           remove-android: 'true'
@@ -246,5 +247,5 @@ jobs:
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v4
         with:
-          name: ak3_2apr_${{ env.KSUVER }}_ci_bbr_thin_${{ github.event.inputs.FEIL }}
+          name: ak3_3apr_${{ env.KSUVER }}_ci_bbr_thin_${{ github.event.inputs.FEIL }}
           path: ./AnyKernel3/*

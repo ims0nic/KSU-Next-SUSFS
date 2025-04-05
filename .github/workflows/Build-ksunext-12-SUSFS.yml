@@ -111,8 +111,8 @@ jobs:
           sed -i 's/ -dirty//g' external/dtc/scripts/setlocalversion
           sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' common/scripts/setlocalversion
           
-          git add -A
-          git commit -m "Force remove -dirty suffix from kernel version"
+          #git add -A
+          #git commit -m "Force remove -dirty suffix from kernel version"
 
       - name: Set up KernelSU Next
         if: github.event.inputs.KSUNEXT_ENABLED == 'true'

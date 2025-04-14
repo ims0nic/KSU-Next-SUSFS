@@ -212,11 +212,11 @@ jobs:
       - name: Build kernel
         run: |
          cd kernel_workspace
-         #export LTO=thin
-         export LTO=full
-         ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }}
+         export LTO=thin
+         #export LTO=full
+         #./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }}
 
-         #./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }} --lto=thin --verbose_failures --jobs=$(nproc --all) --ignore_missing_projects
+         ./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }} --lto=thin --verbose_failures --jobs=$(nproc --all) --ignore_missing_projects --config=stamp --user_kmi_symbol_lists=//msm-kernel:android/abi_gki_aarch64_qcom
          ### ./kernel_platform/build_with_bazel.py -t ${{ github.event.inputs.CPUD }} ${{ github.event.inputs.BUILD_METHOD }} --lto=full --verbose_failures --jobs=$(nproc --all) --ignore_missing_projects
          
          #./kernel_platform/build_with_bazel.py --lto=thin -t pineapple gki --jobs=$(nproc --all) --verbose_failures --config=stamp --user_kmi_symbol_lists=//msm-kernel:android/abi_gki_aarch64_qcom --ignore_missing_projects || { echo "Bazel build failed"; exit 1; }
@@ -249,5 +249,5 @@ jobs:
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v4
         with:
-          name: ak3_9apr_${{ env.KSUVER }}_full_${{ github.event.inputs.FEIL }}
+          name: ak3_14apr_${{ env.KSUVER }}_thin_${{ github.event.inputs.FEIL }}
           path: ./AnyKernel3/*

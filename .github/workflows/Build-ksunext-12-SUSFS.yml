@@ -144,8 +144,8 @@ jobs:
           cd ../common
           patch -p1 < 50_add_susfs_in_gki-${{ github.event.inputs.ANDROID_VERSION }}-${{ github.event.inputs.KERNEL_VERSION }}.patch || true
           
-          cp ../../kernel_patches/69_hide_stuff.patch ./          
-          patch -p1 -F 3 < 69_hide_stuff.patch
+          #cp ../../kernel_patches/69_hide_stuff.patch ./        
+          #patch -p1 -F 3 < 69_hide_stuff.patch
           
           # Replace next_hooks.patch with syscall_hooks.patch
           patch -p1 -F 3 < syscall_hooks.patch
@@ -249,5 +249,5 @@ jobs:
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v4
         with:
-          name: ak3_14apr_${{ env.KSUVER }}_thin_${{ github.event.inputs.FEIL }}
+          name: ak3_19apr_${{ env.KSUVER }}_thin_${{ github.event.inputs.FEIL }}
           path: ./AnyKernel3/*
